@@ -1,0 +1,16 @@
+.navbar{
+    position: sticky;
+    top:0;
+    z-index: 9;
+}
+.chat-container {
+    overflow-y: scroll;
+    min-height: 350px;
+    height: calc(100vh - 181px);
+}
+.message-field{
+    position: sticky;
+    bottom:0;
+    z-index: 9;
+    background-color: #fff;
+}

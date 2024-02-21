@@ -1,0 +1,141 @@
+<section class="gradient-custom">
+  @if(userdata){
+  <div class="navbar d-flex justify-content-between ps-5 p-1 m-auto bg-primary align-items-center">
+    <div class="d-flex align-items-center">
+      <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
+        class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+      <span class="text-white">{{userdata.name}}</span>
+    </div>
+    <div>
+      <button class="btn btn-danger" (click)="Logout()">LogOut</button>
+    </div>
+  </div>
+  }
+  <div class="container py-5">
+
+    <div class="row">
+
+      <div class="col-md-6 col-lg-5 col-xl-5 mb-4 mb-md-0">
+        <div class="d-flex justify-content-center gap-4">
+          <h5 class="font-weight-bold mb-3 text-center text-dark">Member</h5>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+            <span><i class="fa fa-solid fa-user-plus"></i></span>
+        </button>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Add Friend</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                      <form [formGroup]="addFriendForm">
+                        <label>Name</label>
+                        <input class="form-control m-2" type="text" formControlName="name" />
+                        <label>User Name</label>
+                        <input class="form-control m-2" type="text" formControlName="username" />
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" (click)="addFriend()">ADD</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        </div>
+
+        <div class="card mask-custom">
+          <div class="card-body">
+
+            <ul class="list-unstyled mb-0">
+              @if(frienList?.length){
+              @for(friend of frienList ; track friend._id){
+              <li class="p-2 border-bottom" style="border-bottom: 1px solid rgba(255,255,255,.3) !important;">
+                <a (click)="seletedUser(friend)" class="d-flex justify-content-between link-light">
+                  <div class="d-flex flex-row">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
+                      class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                    <div class="pt-1">
+                      <p class="fw-bold mb-0 text-primary">{{friend.friendName}}</p>
+                      <p class="small text-success">Hello, Are you there?</p>
+                    </div>
+                  </div>
+                  <div class="pt-1">
+                    <p class="small text-white mb-1">Just now</p>
+                    <span class="badge bg-danger float-end">1</span>
+                  </div>
+                </a>
+              </li>**
+              }
+              }
+            </ul>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="chat-container col-md-6 col-lg-7 col-xl-7">
+
+        <ul class="list-unstyled text-white">
+          @for(chat of chatData ; track chat._id){
+            @if(chat.user === userdata.name){
+
+              <li class="d-flex justify-content-between mb-4">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp" alt="avatar"
+                  class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
+                <div class="card mask-custom w-100">
+                  <div class="card-header d-flex justify-content-between p-3"
+                    style="border-bottom: 1px solid rgba(255,255,255,.3);">
+                    <p class="fw-bold mb-0">{{chat.user}}</p>
+                    <p class="text-light small mb-0"><i class="far fa-clock"></i> {{chat.time}}</p>
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-0">
+                     {{chat.message}}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            }@else{
+
+              <li class="d-flex justify-content-between mb-4">
+                <div class="card mask-custom w-100">
+                  <div class="card-header d-flex justify-content-between p-3"
+                    style="border-bottom: 1px solid rgba(255,255,255,.3);">
+                    <p class="fw-bold mb-0">{{chat.user}}</p>
+                    <p class="text-light small mb-0"><i class="far fa-clock"></i>{{chat.time}}</p>
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-0">
+                     {{chat.user}}
+                    </p>
+                  </div>
+                </div>
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp" alt="avatar"
+                  class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" width="60">
+              </li>
+            }
+
+          }
+          <li class="mb-3 message-field">
+            <div class="form-outline form-white">
+              <textarea class="form-control" id="textAreaExample3" rows="4"></textarea>
+              <label class="form-label" for="textAreaExample3">Message</label>
+              <button type="button" class="btn btn-light btn-lg btn-rounded float-end">Send</button>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
