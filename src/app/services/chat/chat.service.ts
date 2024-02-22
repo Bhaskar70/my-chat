@@ -7,11 +7,11 @@ import { io, Socket } from 'socket.io-client';
   providedIn: 'root'
 })
 export class ChatService {
-  apiUrl = 'http://localhost:3000/api'
+  apiUrl = 'http://localhost:3000/'
   private socket: Socket;
   'document': Document
   constructor(private http: HttpClient) {
-    this.socket = io('http://localhost:3000', { transports: ['websocket', 'polling', 'flashsocket'] });
+    this.socket = io(this.apiUrl, { transports: ['websocket', 'polling', 'flashsocket'] });
    }
   userData = new BehaviorSubject('')
   sendSocket(url :string , data:any) {
