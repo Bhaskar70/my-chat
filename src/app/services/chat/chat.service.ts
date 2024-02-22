@@ -7,7 +7,7 @@ import { io, Socket } from 'socket.io-client';
   providedIn: 'root'
 })
 export class ChatService {
-  apiUrl = 'http://localhost:3000/'
+  apiUrl = 'https://backend-msru.onrender.com'
   private socket: Socket;
   'document': Document
   constructor(private http: HttpClient) {
