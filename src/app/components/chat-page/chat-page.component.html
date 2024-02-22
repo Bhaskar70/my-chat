@@ -14,7 +14,6 @@
   <div class="container py-5">
 
     <div class="row">
-
       <div class="col-md-6 col-lg-5 col-xl-5 mb-4 mb-md-0">
         <div class="d-flex justify-content-center gap-4">
           <h5 class="font-weight-bold mb-3 text-center text-dark">Member</h5>
@@ -37,7 +36,7 @@
                         <label>Name</label>
                         <input class="form-control m-2" type="text" formControlName="name" />
                         <label>User Name</label>
-                        <input class="form-control m-2" type="text" formControlName="username" />
+                        <input class="form-control m-2" type="text" formControlName="userName" />
                       </form>
                     </div>
                     <div class="modal-footer">
@@ -114,7 +113,7 @@
                   </div>
                   <div class="card-body">
                     <p class="mb-0">
-                     {{chat.user}}
+                     {{chat.message}}
                     </p>
                   </div>
                 </div>
@@ -126,9 +125,9 @@
           }
           <li class="mb-3 message-field">
             <div class="form-outline form-white">
-              <textarea class="form-control" id="textAreaExample3" rows="4"></textarea>
+              <textarea class="form-control" id="textAreaExample3" (keyup)="$event.keyCode === 13 && sendMessage()" [(ngModel)]="message" rows="4"></textarea>
               <label class="form-label" for="textAreaExample3">Message</label>
-              <button type="button" class="btn btn-light btn-lg btn-rounded float-end">Send</button>
+              <button type="button" class="btn btn-light btn-lg btn-rounded float-end" (click)="sendMessage()">Send</button>
             </div>
           </li>
         </ul>

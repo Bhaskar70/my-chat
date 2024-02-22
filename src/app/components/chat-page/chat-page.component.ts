@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-
+import { v4 as uuidv4 } from 'uuid';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { ChatService } from '../../services/chat/chat.service';
@@ -14,10 +14,11 @@ import { ChatService } from '../../services/chat/chat.service';
 })
 export class ChatPageComponent {
   userdata: any
-  frienList: any;
-  chatData: any;
+  frienList: any =[];
+  chatData: any=[];
   addFriendForm!: FormGroup;
-
+  selectedFriend: any;
+  message :string ='';
   constructor(private chatserive: ChatService, private cdr: ChangeDetectorRef, private router: Router, private fb :FormBuilder) {
     this.addFriendForm = this.fb.group({
       name : ['' ,Validators.required],
@@ -33,15 +34,31 @@ export class ChatPageComponent {
         this.frienList = res.friendList
       })
     })
+
+    this.chatserive.getSocket('new message').subscribe(res=>{
+      this.chatData.push(res)
+    })
   }
 
   addFriend() {
-
+    if(this.addFriendForm.valid){
+      const payload = {
+        chatId : uuidv4(),
+        userId :this.userdata._id,
+        friendId : this.addFriendForm.value.userName,
+        friendName : this.addFriendForm.value.name
+      }
+      this.chatserive.post('addfriend' , payload).subscribe((res:any)=>{
+        console.log(res,'new friend')
+        this.frienList = res.friendList
+      })
+    }
   }
 
   seletedUser(friend: any) {
+    this.selectedFriend = friend
     this.chatserive.get(`getchats/${friend.chatId}`).subscribe((res:any)=>{
-      this.chatData = res.chats
+      this.chatData = res?.chats
       console.log(this.chatData , 'chats')
     })  
   }
@@ -51,5 +68,15 @@ export class ChatPageComponent {
       this.router.navigate(['/'])
     })
   }
-
+  sendMessage(){
+    if(this.message?.length>0){
+      this.chatserive.sendSocket('message' , {id : this.selectedFriend.chatId , chat: {
+        user : this.userdata.name,
+        message : this.message,
+        time : new Date().toUTCString() ,
+        read :false,
+        type : 'text'
+        }})
+    }
+  }
 }
