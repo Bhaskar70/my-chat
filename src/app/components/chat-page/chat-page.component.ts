@@ -30,7 +30,7 @@ export class ChatPageComponent {
     this.chatserive.get('user').subscribe((res: any) => {
       console.log(res, "123")
       this.userdata = res
-      this.chatserive.get(`/getfriends/${this.userdata._id}`).subscribe((res: any) => {
+      this.chatserive.get(`getfriends/${this.userdata._id}`).subscribe((res: any) => {
         this.frienList = res.friendList
       })
     })
