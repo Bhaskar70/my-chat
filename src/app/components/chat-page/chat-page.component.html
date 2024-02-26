@@ -83,9 +83,10 @@
       <div class="chat-container col-md-6 col-lg-7 col-xl-7">
 
         <ul class="list-unstyled text-white">
-          @for(chat of chatData ; track chat._id){
+          @for(date of chatData ; track date){
+            <p>{{date | date:'short'}}</p>
+            @for(chat of chatData[date] ; track chat._id){
             @if(chat.user === userdata.name){
-
               <li class="d-flex justify-content-between mb-4">
                 <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp" alt="avatar"
                   class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
@@ -93,7 +94,7 @@
                   <div class="card-header d-flex justify-content-between p-3"
                     style="border-bottom: 1px solid rgba(255,255,255,.3);">
                     <p class="fw-bold mb-0">{{chat.user}}</p>
-                    <p class="text-light small mb-0"><i class="far fa-clock"></i> {{chat.time}}</p>
+                    <p class="text-dark small mb-0"><i class="far fa-clock"></i> {{chat.time | date :'shortTime'}}</p>
                   </div>
                   <div class="card-body">
                     <p class="mb-0">
@@ -121,7 +122,7 @@
                   class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" width="60">
               </li>
             }
-
+          }
           }
           <li class="mb-3 message-field">
             <div class="form-outline form-white">

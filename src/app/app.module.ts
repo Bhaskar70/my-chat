@@ -11,6 +11,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatPageComponent } from './components/chat-page/chat-page.component';
+import { chatReducer } from './store/reducer';
+import { ChatEffects } from './store/effects';
 
 @NgModule({
   declarations: [
@@ -26,8 +28,8 @@ import { ChatPageComponent } from './components/chat-page/chat-page.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule ,
-    StoreModule.forRoot({}, {}),
-    EffectsModule.forRoot([])
+    StoreModule.forRoot({data : chatReducer}),
+    EffectsModule.forRoot([ChatEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

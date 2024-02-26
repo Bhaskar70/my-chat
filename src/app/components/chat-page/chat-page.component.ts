@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { ChatService } from '../../services/chat/chat.service';
+import { Store } from '@ngrx/store';
+import { loadChatId } from '../../store/actions';
+import { chatData } from '../../store/selector';
 
 @Component({
   selector: 'app-chat-page',
@@ -14,17 +17,23 @@ import { ChatService } from '../../services/chat/chat.service';
 })
 export class ChatPageComponent {
   userdata: any
-  frienList: any =[];
-  chatData: any=[];
+  frienList: any = [];
+  chatData: any = [];
   addFriendForm!: FormGroup;
   selectedFriend: any;
-  message :string ='';
-  constructor(private chatserive: ChatService, private cdr: ChangeDetectorRef, private router: Router, private fb :FormBuilder) {
+  message: string = '';
+  constructor(
+    private chatserive: ChatService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private fb: FormBuilder,
+    private store: Store
+  ) {
     this.addFriendForm = this.fb.group({
-      name : ['' ,Validators.required],
-      userName : ['' ,Validators.required],
+      name: ['', Validators.required],
+      userName: ['', Validators.required],
     })
-   }
+  }
 
   ngOnInit() {
     this.chatserive.get('user').subscribe((res: any) => {
@@ -35,21 +44,28 @@ export class ChatPageComponent {
       })
     })
 
-    this.chatserive.getSocket('new message').subscribe(res=>{
+    this.chatserive.getSocket('new message').subscribe(res => {
       this.chatData.push(res)
+    })
+    this.store.select(chatData).subscribe((res)=>{
+      console.log(res)
+      if(res){
+        this.chatData = JSON.parse(JSON.stringify(res))
+      }
+
     })
   }
 
   addFriend() {
-    if(this.addFriendForm.valid){
+    if (this.addFriendForm.valid) {
       const payload = {
-        chatId : uuidv4(),
-        userId :this.userdata._id,
-        friendId : this.addFriendForm.value.userName,
-        friendName : this.addFriendForm.value.name
+        chatId: uuidv4(),
+        userId: this.userdata._id,
+        friendId: this.addFriendForm.value.userName,
+        friendName: this.addFriendForm.value.name
       }
-      this.chatserive.post('addfriend' , payload).subscribe((res:any)=>{
-        console.log(res,'new friend')
+      this.chatserive.post('addfriend', payload).subscribe((res: any) => {
+        console.log(res, 'new friend')
         this.frienList = res.friendList
       })
     }
@@ -57,10 +73,7 @@ export class ChatPageComponent {
 
   seletedUser(friend: any) {
     this.selectedFriend = friend
-    this.chatserive.get(`getchats/${friend.chatId}`).subscribe((res:any)=>{
-      this.chatData = res?.chats
-      console.log(this.chatData , 'chats')
-    })  
+    this.store.dispatch(loadChatId({ id: friend.chatId }))
   }
 
   Logout() {
@@ -68,15 +81,17 @@ export class ChatPageComponent {
       this.router.navigate(['/'])
     })
   }
-  sendMessage(){
-    if(this.message?.length>0){
-      this.chatserive.sendSocket('message' , {id : this.selectedFriend.chatId , chat: {
-        user : this.userdata.name,
-        message : this.message,
-        time : new Date().toUTCString() ,
-        read :false,
-        type : 'text'
-        }})
+  sendMessage() {
+    if (this.message?.length > 0) {
+      this.chatserive.sendSocket('message', {
+        id: this.selectedFriend.chatId, chat: {
+          user: this.userdata.name,
+          message: this.message,
+          time: new Date().toUTCString(),
+          read: false,
+          type: 'text'
+        }
+      })
     }
   }
 }
