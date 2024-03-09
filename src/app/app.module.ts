@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChatPageComponent } from './components/chat-page/chat-page.component';
 import { chatReducer } from './store/reducer';
 import { ChatEffects } from './store/effects';
+import { MinLengthDirective } from './directives/username.directive';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ChatEffects } from './store/effects';
     LandingPageComponent,
     LoginComponent,
     RegisterComponent,
-    ChatPageComponent
+    ChatPageComponent,
+    MinLengthDirective
   ],
   imports: [
     BrowserModule,

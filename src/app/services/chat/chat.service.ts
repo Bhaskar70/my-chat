@@ -32,14 +32,14 @@ export class ChatService {
       }
     });
   }
-  post(url:string,payload: any) {
+  post(url:string,payload: any):Observable<any> {
     return this.http.post(`${this.apiUrl}/${url}`, payload,{ withCredentials: true })
   }
 
-  get(url :string) {
+  get(url :string):Observable<any> {
     return this.http.get(`${this.apiUrl}/${url}`, { withCredentials: true })
   }
-  delete(url:string){
+  delete(url:string):Observable<any>{
     return this.http.delete(`${this.apiUrl}/${url}`, { withCredentials: true })
   }
   getSocketData(){

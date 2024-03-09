@@ -7,6 +7,14 @@ interface Message {
     _id: string;
 }
 
+ export function messagesGroupedByDate(message : Message[]) {
+    const groupedMessages = groupMessagesByDate(message);
+    const today = new Date().toDateString()
+    return Object.keys(groupedMessages).map((date) => ({
+      date: date == today ? 'Today' : date,
+      messages: groupedMessages[date],
+    }));
+  }
 export function groupMessagesByDate(messages: Message[]): { [date: string]: Message[] } {
     const groupedMessages: { [date: string]: Message[] } = {};
 

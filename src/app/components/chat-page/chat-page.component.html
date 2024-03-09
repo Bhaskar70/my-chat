@@ -53,7 +53,7 @@
           <div class="card-body">
 
             <ul class="list-unstyled mb-0">
-              @if(frienList?.length){
+              @if(frienList){
               @for(friend of frienList ; track friend._id){
               <li class="p-2 border-bottom" style="border-bottom: 1px solid rgba(255,255,255,.3) !important;">
                 <a (click)="seletedUser(friend)" class="d-flex justify-content-between link-light">
@@ -80,12 +80,11 @@
 
       </div>
 
-      <div class="chat-container col-md-6 col-lg-7 col-xl-7">
-
-        <ul class="list-unstyled text-white">
-          @for(date of chatData ; track date){
-            <p>{{date | date:'short'}}</p>
-            @for(chat of chatData[date] ; track chat._id){
+      <div class="chat-container col-md-6 col-lg-7 col-xl-7" #chatContainer>
+        <ul class="list-unstyled">
+          @for(messages of chatData ; track $index){
+            <h4 class="text-center">{{messages.date !== 'Today' ? (messages.date | date: 'MMM ,dd yyyy') : messages.date}}</h4>
+            @for(chat of messages.messages; track chat._id){
             @if(chat.user === userdata.name){
               <li class="d-flex justify-content-between mb-4">
                 <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp" alt="avatar"
@@ -124,15 +123,12 @@
             }
           }
           }
-          <li class="mb-3 message-field">
-            <div class="form-outline form-white">
-              <textarea class="form-control" id="textAreaExample3" (keyup)="$event.keyCode === 13 && sendMessage()" [(ngModel)]="message" rows="4"></textarea>
-              <label class="form-label" for="textAreaExample3">Message</label>
-              <button type="button" class="btn btn-light btn-lg btn-rounded float-end" (click)="sendMessage()">Send</button>
-            </div>
-          </li>
         </ul>
-
+        <div class="form-outline form-white">
+          <textarea class="form-control" id="textAreaExample3" (keyup)="$event.keyCode === 13 && sendMessage()" [(ngModel)]="message" rows="4"></textarea>
+          <label class="form-label" for="textAreaExample3">Message</label>
+          <button type="button" class="btn btn-light btn-lg btn-rounded float-end" (click)="sendMessage()">Send</button>
+        </div>
       </div>
 
     </div>

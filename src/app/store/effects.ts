@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { ChatService } from "../services/chat/chat.service";
 import { loadChatId, loadChatSucess } from "./actions";
 import { map, mergeMap, of } from "rxjs";
-import { groupMessagesByDate } from "../utilities/formatMessage";
+import { groupMessagesByDate, messagesGroupedByDate } from "../utilities/formatMessage";
 
 @Injectable()
 export class ChatEffects {
@@ -19,7 +19,11 @@ export class ChatEffects {
     ))
     getChatData(id: string) {
         return this.chatservice.get(`getchats/${id}`).pipe(map((res: any) => {
-            return groupMessagesByDate(res?.chats)
+            if(res?.chats){
+                return messagesGroupedByDate(res?.chats)
+            }else{
+                return []
+            }
         }))
     }
     constructor(private chatservice: ChatService, private actions$: Actions) {

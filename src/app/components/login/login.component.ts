@@ -19,6 +19,7 @@ export class LoginComponent {
   }
 
   Login(){
+    console.log(this.loginForm, "form")
     if(this.loginForm.valid){
       this.chatService.post('login',this.loginForm.value).subscribe((res:any)=>{
         this.router.navigate(['/chat-page'])

@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,6 +9,7 @@ import { ChatService } from '../../services/chat/chat.service';
 import { Store } from '@ngrx/store';
 import { loadChatId } from '../../store/actions';
 import { chatData } from '../../store/selector';
+import { Friend, Friends, MessageGroup, MessageList, User } from '../../interfaces/user';
 
 @Component({
   selector: 'app-chat-page',
@@ -16,15 +17,15 @@ import { chatData } from '../../store/selector';
   styleUrl: './chat-page.component.scss'
 })
 export class ChatPageComponent {
-  userdata: any
-  frienList: any = [];
-  chatData: any = [];
+  userdata!: User
+  frienList: Friends[] = [];
+  chatData: MessageGroup[] = [];
   addFriendForm!: FormGroup;
-  selectedFriend: any;
+  selectedFriend!: Friend;
   message: string = '';
+  @ViewChild('chatContainer') chatContainer!: ElementRef;
   constructor(
     private chatserive: ChatService,
-    private cdr: ChangeDetectorRef,
     private router: Router,
     private fb: FormBuilder,
     private store: Store
@@ -36,8 +37,7 @@ export class ChatPageComponent {
   }
 
   ngOnInit() {
-    this.chatserive.get('user').subscribe((res: any) => {
-      console.log(res, "123")
+    this.chatserive.get('user').subscribe((res: User) => {
       this.userdata = res
       this.chatserive.get(`getfriends/${this.userdata._id}`).subscribe((res: any) => {
         this.frienList = res.friendList
@@ -45,14 +45,22 @@ export class ChatPageComponent {
     })
 
     this.chatserive.getSocket('new message').subscribe(res => {
-      this.chatData.push(res)
+      let todaymessages = this.chatData.find((chat:MessageGroup)=>chat.date === 'Today')
+      if(todaymessages){
+          todaymessages.messages.push(res)
+      }else{
+        todaymessages = {
+          date  :'Today' , 
+          messages: [res]
+        }
+        this.chatData.push(todaymessages)
+      }
+      
     })
     this.store.select(chatData).subscribe((res)=>{
-      console.log(res)
       if(res){
-        this.chatData = JSON.parse(JSON.stringify(res))
+        this.chatData = JSON.parse(JSON.stringify(res));
       }
-
     })
   }
 
@@ -65,7 +73,6 @@ export class ChatPageComponent {
         friendName: this.addFriendForm.value.name
       }
       this.chatserive.post('addfriend', payload).subscribe((res: any) => {
-        console.log(res, 'new friend')
         this.frienList = res.friendList
       })
     }
@@ -74,6 +81,7 @@ export class ChatPageComponent {
   seletedUser(friend: any) {
     this.selectedFriend = friend
     this.store.dispatch(loadChatId({ id: friend.chatId }))
+    this.scrollBottom()
   }
 
   Logout() {
@@ -93,5 +101,9 @@ export class ChatPageComponent {
         }
       })
     }
+    this.message =''
+  }
+  scrollBottom(){
+      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight + 10;
   }
 }
